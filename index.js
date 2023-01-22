@@ -8,18 +8,27 @@ bot.setMyCommands([
   { command: "/info", description: "Information" },
 ]);
 
-bot.on("message", (msg) => {
-  const text = msg.text;
-  const chatId = msg.chat.id;
+const start = () => {
+  bot.on("message", async (msg) => {
+    const text = msg.text;
+    const chatId = msg.chat.id;
 
-  if (text === "/start") {
-    bot.sendMessage(chatId, "А Лизка, сладкая киска)))");
-  }
+    if (text === "/start") {
+      return bot.sendMessage(
+        chatId,
+        `Шо ты ${msg.from.first_name}?, голова)))`
+      );
+    }
 
-  if (text === "/info") {
-    bot.sendMessage(
-      chatId,
-      `Эта гадость работает ${msg.from.first_name} ${msg.from.last_name}`
-    );
-  }
-});
+    if (text === "/info") {
+      return bot.sendMessage(
+        chatId,
+        `Эта гадость работает - ${msg.from.first_name} ${msg.from.last_name} у тебя всё получилось!`
+      );
+    }
+
+    return bot.sendMessage(chatId, "Напиши чтото нормальное");
+  });
+};
+
+start();
