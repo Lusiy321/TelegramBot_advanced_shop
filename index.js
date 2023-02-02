@@ -16,18 +16,18 @@ const start = () => {
     if (text === "/start") {
       return bot.sendMessage(
         chatId,
-        `Шо ты ${msg.from.first_name}?, голова)))`
+        `Hello ${msg.from.first_name}, how are you?)))`
       );
     }
 
     if (text === "/info") {
       return bot.sendMessage(
         chatId,
-        `Эта гадость работает - ${msg.from.first_name} ${msg.from.last_name} у тебя всё получилось!`
+        `This is work - ${msg.from.first_name} ${msg.from.last_name}`
       );
     }
 
-    return bot.sendMessage(chatId, "Напиши чтото нормальное");
+    return bot.sendMessage(chatId, "Mesagge me");
   });
 };
 
