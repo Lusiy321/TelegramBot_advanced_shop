@@ -4,26 +4,30 @@ const token = "5735264932:AAEtBZZeNqv6jB5zMFRaZSfquyX72dLRIsc";
 const bot = new TelegramApi(token, { polling: true });
 
 bot.setMyCommands([
-  { command: "/start", description: "Start bot" },
-  { command: "/info", description: "Information" },
+  { command: "/start", description: "Старт" },
+  { command: "/info", description: "Информация о товаре" },
 ]);
 
 const start = () => {
   bot.on("message", async (msg) => {
     const text = msg.text;
     const chatId = msg.chat.id;
+    const url = './img/blue-auto-mazar.jpg';
 
     if (text === "/start") {
-      return bot.sendMessage(
+       bot.sendPhoto(chatId, url);
+       bot.sendMessage(
         chatId,
-        `Hello ${msg.from.first_name}, how are you?)))`
+        `Привет ${msg.from.first_name}, для просмотра товара и оформление заказа перейди в меню`
       );
+      
+      return
     }
 
     if (text === "/info") {
       return bot.sendMessage(
         chatId,
-        `This is work - ${msg.from.first_name} ${msg.from.last_name}`
+        `This is work - ${msg.from.first_name}`
       );
     }
 
