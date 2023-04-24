@@ -27,7 +27,7 @@ const start = () => {
     if (text === "/info") {
       return bot.sendMessage(
         chatId,
-        `This is work - ${msg.from.first_name}`
+        `This is work`
       );
     }
 
