@@ -1,8 +1,6 @@
 const TelegramApi = require("node-telegram-bot-api");
-const modul = require("./module/module");
-const order = require("./orderbook");
-
-const token = "5735264932:AAEtBZZeNqv6jB5zMFRaZSfquyX72dLRIsc";
+require("dotenv").config();
+const token = process.env.TELEGRAM_TOKEN;
 
 const bot = new TelegramApi(token, { polling: true });
 
@@ -19,10 +17,9 @@ const start = () => {
 
     if (text === "/start") {
       return bot.sendMessage(chatId, `Привет ${msg.from.first_name}`);
-    
     }
-      return bot.sendMessage(chatId, "Mesagge me");;
-    }
-)};
+    return bot.sendMessage(chatId, "Mesagge me");
+  });
+};
 
 start();
