@@ -74,3 +74,4 @@ const start = () => {
 };
 
 start();
+console.log("Server started");
