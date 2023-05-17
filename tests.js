@@ -1,12 +1,5 @@
-const TelegramApi = require("node-telegram-bot-api");
 const axios = require("axios");
-require("dotenv").config();
-
-const token = process.env.TELEGRAM_TOKEN;
-
-const bot = new TelegramApi(token, { polling: true });
-
-bot.setMyCommands([{ command: "/start", description: "Старт" }]);
+const { bot } = require("./index");
 async function checkPriceChange(chatId) {
   // Получение списка монет
   while (true) {
@@ -34,7 +27,7 @@ async function checkPriceChange(chatId) {
           for (const price of prices) {
             const priceChangePercent = ((price.c - price.o) / price.o) * 100;
 
-            if (priceChangePercent >= 5 || priceChangePercent <= -5) {
+            if (priceChangePercent >= 0.1 || priceChangePercent <= -0.1) {
               bot.sendMessage(
                 chatId,
                 `Пара: #${symbol}, Цена изменилась на: ${priceChangePercent.toFixed(
@@ -55,25 +48,6 @@ async function checkPriceChange(chatId) {
     }
   }
 }
-const start = () => {
-  bot.on("message", async (msg) => {
-    const text = msg.text;
-    const chatId = msg.chat.id;
-
-    if (text === "/start") {
-      bot.sendMessage(
-        chatId,
-        `Привет ${msg.from.first_name} теперь тебе будут приходить уведомления об изменении цены криптовалют биржи Bybit на 5%`
-      );
-      console.log(`New user ${msg.from.first_name} connected`);
-      checkPriceChange(chatId);
-      return;
-    }
-    return bot.sendMessage(chatId, "Mesagge me");
-  });
-};
-
 const date = new Date();
 
-start();
-console.log("Server started", date);
+module.exports = { checkPriceChange };
