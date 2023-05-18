@@ -1,44 +1,12 @@
-const WebSocket = require("ws");
+function percent(o, c, h, l) {
+  const priceOpCl = ((c - o) / o) * 100;
+  const priceHiLo = ((h - l) / l) * 100;
 
-const ws = new WebSocket("wss://stream.bybit.com/realtime");
+  return console.log(
+    `Среднее: ${
+      (priceOpCl + priceHiLo) / 2
+    } Открытие: ${priceOpCl} Похаям: ${priceHiLo}`
+  );
+}
 
-const symbols = [
-  "BTCUSDT",
-  "ETHUSDT",
-  "XRPUSDT",
-  "ADAUSDT",
-  "DOGEUSDT",
-  "SOLUSDT",
-  "DOTUSDT",
-  "LINKUSDT",
-  "LUNAUSDT",
-  "AXSUSDT",
-];
-
-ws.on("open", function open() {
-  for (const symbol of symbols) {
-    ws.send(
-      JSON.stringify({
-        op: "subscribe",
-        args: [`instrument_info.100ms.${symbol}`],
-      })
-    );
-  }
-});
-
-ws.on("message", function incoming(data) {
-  const message = JSON.parse(data);
-  if (
-    message.success === true &&
-    message.topic &&
-    message.topic.includes("instrument_info.100ms.")
-  ) {
-    console.log(
-      `Symbol: ${message.topic.split(".")[2]}, Last Price: ${
-        message.data.last_price
-      }`
-    );
-  }
-});
-
-module.exports = { ws };
+percent(100, 80, 108, 77);

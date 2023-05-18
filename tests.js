@@ -1,10 +1,13 @@
 const axios = require("axios");
 const { bot } = require("./index");
-async function checkPriceChange(chatId) {
-  // Получение списка монет
-  while (true) {
+
+async function checkPriceChange(bool) {
+  if (bool === false) {
+    return bot.sendMessage(chatId, `Вы остановили бот`);
+  } else {
     let coins = [];
 
+    // Получение списка монет
     const responseSymbols = await axios.get(
       "https://api.bybit.com/spot/v3/public/symbols"
     );
@@ -14,40 +17,46 @@ async function checkPriceChange(chatId) {
         coins.push(coin.name);
       }
     }
-    try {
-      for (const symbol of coins) {
-        const intervalResponse = await axios.get(
-          `https://api.bybit.com/spot/v3/public/quote/kline?symbol=${symbol}&interval=1m&limit=1`
-        );
-        if (intervalResponse.status === 200) {
-          const prices = intervalResponse.data.result.list;
-          if (prices === null) {
-            continue;
-          }
-          for (const price of prices) {
-            const priceChangePercent = ((price.c - price.o) / price.o) * 100;
+    while (bool) {
+      try {
+        // Запрос всех пар
+        for (const symbol of coins) {
+          const intervalResponse = await axios.get(
+            `https://api.bybit.com/spot/v3/public/quote/kline?symbol=${symbol}&interval=1m&limit=5`
+          );
+          if (intervalResponse.status === 200) {
+            const prices = intervalResponse.data.result.list;
 
-            if (priceChangePercent >= 0.1 || priceChangePercent <= -0.1) {
-              bot.sendMessage(
-                chatId,
-                `Пара: #${symbol}, Цена изменилась на: ${priceChangePercent.toFixed(
-                  2
-                )}% за 1мин. Объем: ${price.v}$`
-              );
-              console.log(
-                `Symbol: ${symbol}, Price Change: ${priceChangePercent.toFixed(
-                  2
-                )} % за 1мин. Объем: ${price.v}$`
-              );
+            if (prices === null) {
+              continue;
+            }
+            // Расчет разницы в процентах
+            for (const price of prices) {
+              const priceChangePercent = ((price.c - price.o) / price.o) * 100;
+              const priceChangeLow = ((price.l - price.o) / price.o) * 100;
+              const priceChangeHi = ((price.h - price.o) / price.o) * 100;
+              if (
+                priceChangePercent >= 2 ||
+                priceChangePercent <= -2 ||
+                priceChangeLow >= 2 ||
+                priceChangeLow <= -2 ||
+                priceChangeHi >= 2 ||
+                priceChangeHi <= -2
+              ) {
+                console.log(
+                  `Symbol: ${symbol}, Price Change: ${priceChangePercent.toFixed(
+                    2
+                  )} % за 1мин. Объем: ${price.v}$`
+                );
+              }
             }
           }
         }
+      } catch (error) {
+        console.error(`For of: ${error.message}`);
       }
-    } catch (error) {
-      console.error(`For of: ${error.message}`);
     }
   }
 }
 const date = new Date();
-
-module.exports = { checkPriceChange };
+console.log(checkPriceChange(true), date);
