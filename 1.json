@@ -1,0 +1,40 @@
+{
+  "retCode": 0,
+  "retMsg": "OK",
+  "result": {
+    "list": [
+      {
+        "name": "BTCUSDT",
+        "alias": "BTCUSDT",
+        "baseCoin": "BTC",
+        "quoteCoin": "USDT",
+        "basePrecision": "0.000001",
+        "quotePrecision": "0.00000001",
+        "minTradeQty": "0.000048",
+        "minTradeAmt": "1",
+        "maxTradeQty": "71.73956243",
+        "maxTradeAmt": "2000000",
+        "minPricePrecision": "0.01",
+        "category": "1",
+        "showStatus": "1",
+        "innovation": "0"
+      },
+      {
+        "name": "ETHUSDT",
+        "alias": "ETHUSDT",
+        "baseCoin": "ETH",
+        "quoteCoin": "USDT",
+        "basePrecision": "0.00001",
+        "quotePrecision": "0.0000001",
+        "minTradeQty": "0.00062",
+        "minTradeAmt": "1",
+        "maxTradeQty": "1229.2336343",
+        "maxTradeAmt": "2000000",
+        "minPricePrecision": "0.01",
+        "category": "1",
+        "showStatus": "1",
+        "innovation": "0"
+      }
+    ]
+  }
+}

@@ -16,58 +16,51 @@ bot.setMyCommands([
 
 async function checkPriceChange(chatId, resMsg, bool) {
   const coins = coin;
-
-  // Получение списка монет
-  // const responseSymbols = await axios.get(
-  //   "https://api.bybit.com/spot/v3/public/symbols"
-  // );
-  // if (responseSymbols.status === 200) {
-  //   const quotes = responseSymbols.data.result.list;
-  //   for (const coin of quotes) {
-  //     coins.push(coin.name);
-  //   }
-  // }
-  // const data = JSON.stringify(coins);
-  // fs.writeFile("price.json", data, (error) => {
-  //   if (error) {
-  //     console.error("Ошибка при записи в файл:", error);
-  //   } else {
-  //     console.log(`"Массив успешно записан в файл"${data.length}`);
-  //   }
-  // });
+  console.log(bool);
   try {
+    // Получение списка монет
+    const responseSymbols = await axios.get(
+      "https://api.bybit.com/spot/v3/public/symbols"
+    );
+
+    if (responseSymbols.status === 200) {
+      const quotes = responseSymbols.data.result.list;
+      coins.push(...quotes.map((coin) => coin.name));
+    }
+
     // Запрос всех пар
-    while (bool) {
+    do {
       for (const symbol of coins) {
         const intervalResponse = await axios.get(
           `https://api.bybit.com/spot/v3/public/quote/kline?symbol=${symbol}&interval=1m&limit=1`
         );
+
         if (intervalResponse.status === 200) {
           const prices = intervalResponse.data.result.list;
-          if (prices === null) {
-            continue;
-          }
-          // Расчет разницы в процентах
-          for (const price of prices) {
-            const priceChangePercent = ((price.h - price.o) / price.o) * 100;
 
-            if (priceChangePercent >= resMsg || priceChangePercent <= -resMsg) {
-              bot.sendMessage(
-                chatId,
-                `Пара: #${symbol}, Цена изменилась на: ${priceChangePercent.toFixed(
-                  2
-                )}% за 1мин. Объем: ${price.v}$`
-              );
-              console.log(
-                `Symbol: ${symbol}, Price Change: ${priceChangePercent.toFixed(
-                  2
-                )} % за 1мин. Объем: ${price.v}$`
-              );
+          // Проверка, что prices.list не пуст и имеет необходимые свойства
+          if (prices && prices.length > 0) {
+            for (const price of prices) {
+              const priceChangePercent = ((price.h - price.o) / price.o) * 100;
+
+              if (
+                priceChangePercent >= resMsg ||
+                priceChangePercent <= -resMsg
+              ) {
+                bot.sendMessage(
+                  chatId,
+                  `Пара: #${symbol}, Цена изменилась на: ${priceChangePercent.toFixed(
+                    2
+                  )}% за 1мин. Объем: ${price.v}$`
+                );
+              }
             }
           }
         }
       }
-    }
+    } while (bool);
+    bot.sendMessage(chatId, `Выполнение запросов окончено`);
+    console.log("Killed");
   } catch (error) {
     console.error(`For of: ${error.message}`);
   }
@@ -104,7 +97,9 @@ bot.onText(/\/stop/, async (msg) => {
   const chatId = msg.chat.id;
   if (text === "/stop") {
     console.log("Bot stop");
-    return bot.clearTextListeners();
+    checkPriceChange(chatId, 100, false);
+    bot.sendMessage(chatId, `Вы отключили бот`);
+    return;
   }
 });
 
