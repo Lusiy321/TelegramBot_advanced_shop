@@ -1,7 +1,7 @@
 const TelegramApi = require("node-telegram-bot-api");
 const axios = require("axios");
 require("dotenv").config();
-const fs = require("fs");
+
 const { coin } = require("./coin");
 
 const token = process.env.TELEGRAM_TOKEN;
