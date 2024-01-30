@@ -42,7 +42,8 @@ async function checkPriceChange(chatId, resMsg, bool) {
           if (prices && prices.length > 0) {
             for (const price of prices) {
               const priceChangePercent = ((price.h - price.o) / price.o) * 100;
-
+              const priceOpCl = ((price.c - price.o) / price.o) * 100;
+              const priceHiLo = ((price.h - price.l) / price.l) * 100;
               if (
                 priceChangePercent >= resMsg ||
                 priceChangePercent <= -resMsg
@@ -51,7 +52,7 @@ async function checkPriceChange(chatId, resMsg, bool) {
                   chatId,
                   `Пара: #${symbol}, Цена изменилась на: ${priceChangePercent.toFixed(
                     2
-                  )}% за 1мин. Объем: ${price.v}$`
+                  )}% за 1мин. Объем: ${price.v}$.\nЦена открытия: ${price.o}$`
                 );
               }
             }
@@ -81,7 +82,7 @@ bot.on("message", async (msg) => {
 
   if (text) {
     const resMsg = parseInt(text);
-    if (resMsg >= 1) {
+    if (resMsg >= 0) {
       console.log(`User ${msg.from.first_name} set ${resMsg} % value`);
       let bool = true;
       checkPriceChange(chatId, resMsg, bool);
