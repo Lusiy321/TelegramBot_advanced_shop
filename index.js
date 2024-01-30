@@ -42,8 +42,6 @@ async function checkPriceChange(chatId, resMsg, bool) {
           if (prices && prices.length > 0) {
             for (const price of prices) {
               const priceChangePercent = ((price.h - price.o) / price.o) * 100;
-              const priceOpCl = ((price.c - price.o) / price.o) * 100;
-              const priceHiLo = ((price.h - price.l) / price.l) * 100;
               if (
                 priceChangePercent >= resMsg ||
                 priceChangePercent <= -resMsg
